@@ -27,6 +27,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+        // If true show the number of searchCountry count
+        // else show the number of countryNames count
+        
         if searching {
             return searchCounty.count
         } else {
@@ -51,3 +54,49 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 }
 
+
+//MARK: - UISearchBarDelegate Methods
+
+extension ViewController: UISearchBarDelegate {
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // Filter the search for a country when the user starting typing a letter.
+        
+        searchCounty = countryNames.filter({$0.lowercased().prefix(searchBar.text!.count) == searchBar.text!.lowercased()})
+        
+        searching = true
+        tableView.reloadData()
+        
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // Filter the search for a country when the user starting typing a letter.
+        
+        searchCounty = countryNames.filter({$0.lowercased().prefix(searchBar.text!.count) == searchBar.text!.lowercased()})
+        
+        searching = true
+        
+        // Dismiss the keyboard on the main thread
+                
+        DispatchQueue.main.async {
+            searchBar.resignFirstResponder()
+        }
+        
+        tableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        // When the user taps on the cancel button clear the searchBar text
+        // and show the original data
+        
+        searching = false
+        searchBar.text = ""
+        tableView.reloadData()
+        
+    }
+    
+}
